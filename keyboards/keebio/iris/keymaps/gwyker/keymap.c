@@ -122,6 +122,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+        case _LOWER:
+            rgblight_sethsv_noeeprom(HSV_GREEN);
+            break;
+        case _RAISE:
+            rgblight_sethsv_noeeprom(HSV_GOLD);
+            break;
+        case _POWER:
+            rgblight_sethsv_noeeprom(HSV_RED);
+            break;
+        default: //  for any other layers, or the default layer
+            rgblight_sethsv_noeeprom(HSV_PURPLE);
+            break;
+    }
+  return state;
+}
+
 void encoder_update_user(uint8_t index, bool clockwise) {
     switch(biton32(layer_state)) {
         case _RAISE:
