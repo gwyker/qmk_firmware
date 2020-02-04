@@ -6,63 +6,202 @@
 #define _RAISE 2
 #define _POWER 3
 #define _GAME 4
+#define _MOUSE 5
+#define _EMOJI 6
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
-  LOWER,
-  RAISE,
-  POWER,
-  GAME,
+//   LOWER,
+//   RAISE,
+//   POWER,
+//   GAME,
+//   MOUSE,
   ALT_TAB,
+//   EMOJI,
+};
+#define KC_SALT      ALT_TAB
+#define KC_CTL_ESC   LCTL_T(KC_ESC)
+#define KC_CTL_ENT   LCTL_T(KC_ENT)
+#define KC_GUI_ENT   LGUI_T(KC_ENT)
+#define KC_CTL_SPC   LCTL_T(KC_SPC)
+#define KC_CTL_SPC   LCTL_T(KC_SPC)
+#define KC_GAME      TG(_GAME)
+#define KC_LOWER     MO(_LOWER)
+#define KC_RAISE_SPC LT(_RAISE, KC_SPC)
+
+enum unicode_name {
+  GRIN, // grinning face 😊
+  TJOY, // tears of joy 😂
+  SMILE, // grining face with smiling eyes 😁
+  HEART, // heart ❤
+  EYERT, // smiling face with heart shaped eyes 😍
+  CRY, // crying face 😭
+  SMEYE, // smiling face with smiling eyes 😊
+  UNAMU, // unamused 😒
+  KISS, // kiss 😘
+  HART2, // two hearts 💕
+  WEARY, // weary 😩
+  OKHND, // ok hand sign 👌
+  PENSV, // pensive 😔
+  SMIRK, // smirk 😏
+  RECYC, // recycle ♻
+  WINK, // wink 😉
+  THMUP, // thumb up 👍
+  THMDN, // thumb down 👎
+  PRAY, // pray 🙏
+  PHEW, // relieved 😌
+  MUSIC, // musical notes
+  FLUSH, // flushed 😳
+  CELEB, // celebration 🙌
+  CRY2, // crying face 😢
+  COOL, // smile with sunglasses 😎
+  NOEVS, // see no evil
+  NOEVH, // hear no evil
+  NOEVK, // speak no evil
+  POO, // pile of poo
+  EYES, // eyes
+  VIC, // victory hand
+  BHART, // broken heart
+  SLEEP, // sleeping face
+  SMIL2, // smiling face with open mouth & sweat
+  HUNRD, // 100
+  CONFU, // confused
+  TONGU, // face with tongue & winking eye
+  DISAP, // disappointed
+  YUMMY, // face savoring delicious food
+  CLAP, // hand clapping
+  FEAR, // face screaming in fear
+  HORNS, // smiling face with horns
+  HALO, // smiling face with halo
+  BYE, // waving hand
+  SUN, // sun
+  MOON, // moon
+  SKULL, // skull
+};
+
+const uint32_t PROGMEM unicode_map[] = {
+  [GRIN] = 0x1F600,
+  [TJOY] = 0x1F602,
+  [SMILE] = 0x1F601,
+  [HEART] = 0x2764,
+  [EYERT] = 0x1f60d,
+  [CRY] = 0x1f62d,
+  [SMEYE] = 0x1F60A,
+  [UNAMU] = 0x1F612,
+  [KISS] = 0x1F618,
+  [HART2] = 0x1F495,
+  [WEARY] = 0x1F629,
+  [OKHND] = 0x1F44C,
+  [PENSV] = 0x1F614,
+  [SMIRK] = 0x1F60F,
+  [RECYC] = 0x267B,
+  [WINK] = 0x1F609,
+  [THMUP] = 0x1F44D,
+  [THMDN] = 0x1F44E,
+  [PRAY] = 0x1F64F,
+  [PHEW] = 0x1F60C,
+  [MUSIC] = 0x1F3B6,
+  [FLUSH] = 0x1F633,
+  [CELEB] = 0x1F64C,
+  [CRY2] = 0x1F622,
+  [COOL] = 0x1F60E,
+  [NOEVS] = 0x1F648,
+  [NOEVH] = 0x1F649,
+  [NOEVK] = 0x1F64A,
+  [POO] = 0x1F4A9,
+  [EYES] = 0x1F440,
+  [VIC] = 0x270C,
+  [BHART] = 0x1F494,
+  [SLEEP] = 0x1F634,
+  [SMIL2] = 0x1F605,
+  [HUNRD] = 0x1F4AF,
+  [CONFU] = 0x1F615,
+  [TONGU] = 0x1F61C,
+  [DISAP] = 0x1F61E,
+  [YUMMY] = 0x1F60B,
+  [CLAP] = 0x1F44F,
+  [FEAR] = 0x1F631,
+  [HORNS] = 0x1F608,
+  [HALO] = 0x1F607,
+  [BYE] = 0x1F44B,
+  [SUN] = 0x2600,
+  [MOON] = 0x1F314,
+  [SKULL] = 0x1F480,
 };
 
 // const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-//   [_QWERTY] = LAYOUT(
+// 	[0] = LAYOUT(ALT_TAB, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSLS, KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P,
+//   LCTL_T(KC_ENT), LCTL_T(KC_ESC), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_LSPO, KC_Z, KC_X, KC_C, KC_V, KC_B, TG(4), KC_LALT, KC_N, KC_M,
+//   KC_COMM, KC_DOT, KC_SLSH, KC_RSPC, KC_BSPC, MO(1), LGUI_T(KC_ENT), LCTL_T(KC_SPC), LT(2,KC_SPC), KC_ENT),
+// 	[1] = LAYOUT(KC_TRNS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_APP,
+// RALT(KC_TAB), KC_TRNS, KC_TRNS, KC_UP, KC_TRNS, KC_TRNS, KC_TRNS, KC_P7, KC_P8, KC_P9, KC_PSCR,
+// KC_INS, KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_TRNS, TG(5), KC_P4, KC_P5, KC_P6, KC_HOME,
+// KC_PGUP, KC_LALT, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_MUTE, KC_TRNS, OSL(6), KC_P1, KC_P2, KC_P3, KC_END, KC_PGDN, KC_TRNS, KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_P0),
+// 	[2] = LAYOUT(KC_F12, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_TRNS, KC_LCBR, KC_LPRN, KC_LBRC, KC_EQL, KC_TILD, KC_PIPE, KC_PLUS, KC_RBRC, KC_RPRN, KC_RCBR, KC_TRNS, KC_TRNS, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_DQUO, KC_LALT, KC_TRNS, KC_TRNS, KC_TRNS, KC_UNDS, KC_GRV, KC_TRNS, KC_TRNS, KC_BSLS, KC_MINS, KC_LT, KC_GT, KC_QUES, KC_RALT, KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_TRNS, RESET),
+// 	[3] = LAYOUT(KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PSCR, KC_TRNS, KC_TRNS, KC_MPRV, KC_MNXT, KC_VOLU, KC_TRNS, KC_TRNS, RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, RGB_RMOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
+// 	[4] = LAYOUT(KC_ENT, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSLS, KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_MINS, KC_LSFT, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_LCTL, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_TRNS, KC_DEL, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT, KC_RALT, KC_SPC, MO(1), MO(2), KC_SPC, KC_ENT),
+// 	[5] = LAYOUT(KC_TRNS, KC_TRNS, KC_ACL0, KC_ACL1, KC_ACL2, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_BTN1, KC_MS_U, KC_BTN3, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_MS_L, KC_MS_D, KC_MS_R, KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_TRNS, KC_BTN2, KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
+//     [6] = LAYOUT(
+// 	[_QWERTY] = LAYOUT_kc(
+//   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
+//      SALT, 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,BSLS,
+//   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
+//      TAB , Q  , W  , E  , R  , T  ,                Y  , U  , I  , O  , P  ,CRET,
+//   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
+//      CESC, A  , S  , D  , F  , G  ,                H  , J  , K  , L  ,SCLN,QUOT,
+//   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
+//      LSPO, Z  , X  , C  , V  , B  ,GAME,     LALT, N  , M  ,COMM, DOT,SLSH,RSPC,
+//   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
+//                        BSPC,LOWR,GENT,         CSPC,RAIS,ENT
+//   //                  `----+----+----'        `----+----+----'
+//   ),
+
+//   [_QWERTY] = LAYOUT_kc(
 //   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-//      KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+//         SALT,    1,       2,       3,       4,       5,                                  6,       7,       8,       9,       0,       BSLS,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-//      KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                               KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+//          TAB,    Q,       W,       E,       R,       T,                                  Y,       U,       I,       O,       P,    CTL_ENT,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-//      KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                               KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+//      CTL_ESC,    A,       S,       D,       F,       G,                                  H,       J,       K,       L,       SCLN,    QUOT,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-//      KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_GRV,           KC_DEL,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+//         LSPO,    Z,       X,       C,       V,       B,       GAME,            LALT,     N,       M,      COMM,    DOT,      SLSH,    RSPC,
 //   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-//                                     KC_LGUI, LOWER,   KC_ENT,                    KC_SPC,  RAISE,   KC_RALT
+//                                        BSPC,  LOWER,  GUI_ENT,                   CTL_SPC, RAISE_SPC,  ENT
 //                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
 //   ),
 
-//   [_LOWER] = LAYOUT(
+//   [_LOWER] = LAYOUT_kc(
 //   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-//      KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                            KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_PGUP,
+//      _______,    F1,      F2,      F3,      F4,      F5,                                 F6,      F7,      F8,      F9,      F0,     APP,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-//      RESET,   KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_PGDN,
+//      RESET,      1,       2,       3,       4,       5,                                  6,       7,       8,       9,       0,       PGDN,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-//      KC_DEL,  _______, KC_LEFT, KC_RGHT, KC_UP,   KC_LBRC,                            KC_RBRC, KC_P4,   KC_P5,   KC_P6,   KC_PLUS, KC_HOME,
+//         DEL,  _______,    LEFT,    RGHT,    UP,      LBRC,                               RBRC,    P4,      P5,      P6,      PLUS,    HOME,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-//      BL_STEP, _______, _______, _______, KC_DOWN, KC_LCBR, KC_LPRN,          KC_RPRN, KC_RCBR, KC_P1,   KC_P2,   KC_P3,   KC_MINS, KC_END,
+//      BL_STEP, _______, _______, _______,    DOWN,    LCBR,    LPRN,             RPRN,    RCBR,    P1,      P2,      P3,      MINS,    END,
 //   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-//                                     _______, _______, KC_DEL,                    KC_DEL,  _______, KC_P0
+//                                     _______, _______,    DEL,                       DEL,  _______,    P0
 //                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
 //   ),
 
-//   [_RAISE] = LAYOUT(
+//   [_RAISE] = LAYOUT_kc(
 //   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
-//      KC_F12,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                              KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
+//         F12,     F1,      F2,      F3,      F4,      F5,                                 F6,      F7,      F8,      F9,      F10,     F11,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-//      RGB_TOG, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                            KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
+//      RGB_TOG,    EXLM,    AT,      HASH,    DLR,     PERC,                               CIRC,    AMPR,    ASTR,    LPRN,    RPRN, _______,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-//      RGB_MOD, KC_MPRV, KC_MNXT, KC_VOLU, KC_PGUP, KC_UNDS,                            KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
+//      RGB_MOD,    MPRV,    MNXT,    VOLU,    PGUP,    UNDS,                               EQL,     HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-//      KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, KC_PGDN, KC_MINS, KC_LPRN,          _______, KC_PLUS, KC_END,  RGB_HUD, RGB_SAD, RGB_VAD, _______,
+//         MUTE,    MSTP,    MPLY,    VOLD,    PGDN,    MINS,    LPRN,          _______,    PLUS,    END,  RGB_HUD, RGB_SAD, RGB_VAD, _______,
 //   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 //                                     _______, _______, _______,                   _______, _______, _______
 //                                 // └────────┴────────┴────────┘                 └────────┴────────┴────────┘
 //   ),
 
-//   [_POWER] = LAYOUT(
+//   [_POWER] = LAYOUT_kc(
 //   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
 //      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
 //   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
@@ -77,13 +216,44 @@ enum custom_keycodes {
 //   )
 // };
 
+// /* Emoji
+//  * ,-----------------------------------------------------------------------------------.
+//  * |  💕  |  😢  |  😩  | 😍   |  😏  |  😂  |  ♻  |  😒  |  🎶  | 👌  |  😔  |  😌  |
+//  * |------+------+------+------+------+-------------+------+------+------+------+------|
+//  * |  👍  |  🙏  |  😁  |  😅  |  😳  |  😊  |  ❤  |  👋  |  😘  | 🙌  |  😎  | 🙈   |
+//  * |------+------+------+------+------+------+------+------+------+------+------+------|
+//  * |  👎  |  😴  |  👏  |  😭  |  ✌  |  💔  |  ☀  |  😊  |  😉  |  🌔  |  😕  |  🙉  |
+//  * |------+------+------+------+------+------+------+------+------+------+------+------|
+//  * |  💩  |  👀  |  💯  |      |  💀  |  😈  |  😇  |  😱  |     |  😋  |  😞  |  🙊  |
+//  * `-----------------------------------------------------------------------------------'
+//  */
+// [_EMOJI] = LAYOUT(
+//   X(HART2), X(CRY2),X(WEARY),X(EYERT),X(SMIRK), X(TJOY),X(RECYC),X(UNAMU),X(MUSIC),X(OKHND),X(PENSV), X(PHEW),
+//   X(THMUP), X(PRAY),X(SMILE),X(SMIL2),X(FLUSH), X(GRIN),X(HEART),  X(BYE), X(KISS),X(CELEB), X(COOL),X(NOEVS),
+//   X(THMDN),X(SLEEP), X(CLAP),  X(CRY),  X(VIC),X(BHART),  X(SUN),X(SMEYE), X(WINK), X(MOON),X(CONFU),X(NOEVH),
+//     X(POO), X(EYES), X(HUNRD),_______, X(SKULL),X(HORNS), X(HALO), X(FEAR),_______,X(YUMMY),X(DISAP),X(NOEVK),
+//                                            _______, _______, _______
+// ),
+
+
+//// TODO WHEN KEYMAPPIN ////
+// KC_F13 -> ALT_TAB
+// add emoji layer 6
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[0] = LAYOUT(ALT_TAB, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSLS, KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, LCTL_T(KC_ENT), LCTL_T(KC_ESC), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_LSPO, KC_Z, KC_X, KC_C, KC_V, KC_B, TG(4), KC_LALT, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSPC, KC_BSPC, MO(1), LGUI_T(KC_ENT), LCTL_T(KC_SPC), MO(2), KC_ENT),
-	[1] = LAYOUT(KC_TRNS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_APP, RALT(KC_TAB), KC_TRNS, KC_TRNS, KC_UP, KC_TRNS, KC_TRNS, KC_TRNS, KC_P7, KC_P8, KC_P9, KC_PSCR, KC_INS, KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_TRNS, TG(5), KC_P4, KC_P5, KC_P6, KC_HOME, KC_PGUP, KC_LALT, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_MUTE, KC_TRNS, KC_TRNS, KC_P1, KC_P2, KC_P3, KC_END, KC_PGDN, KC_TRNS, KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_P0),
+	[0] = LAYOUT(ALT_TAB, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSLS, KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, LCTL_T(KC_ENT), LCTL_T(KC_ESC), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_LSPO, KC_Z, KC_X, KC_C, KC_V, KC_B, TG(4), KC_LALT, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSPC, KC_BSPC, MO(1), LGUI_T(KC_ENT), LCTL_T(KC_SPC), LT(2,KC_SPC), KC_ENT),
+	[1] = LAYOUT(KC_TRNS, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_APP, RALT(KC_TAB), KC_TRNS, KC_TRNS, KC_UP, KC_TRNS, KC_TRNS, KC_TRNS, KC_P7, KC_P8, KC_P9, KC_PSCR, KC_INS, KC_TRNS, KC_TRNS, KC_LEFT, KC_DOWN, KC_RGHT, KC_TRNS, TG(5), KC_P4, KC_P5, KC_P6, KC_HOME, KC_PGUP, KC_LALT, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_MUTE, KC_TRNS, MO(6), KC_P1, KC_P2, KC_P3, KC_END, KC_PGDN, KC_TRNS, KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_P0),
 	[2] = LAYOUT(KC_F12, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_TRNS, KC_LCBR, KC_LPRN, KC_LBRC, KC_EQL, KC_TILD, KC_PIPE, KC_PLUS, KC_RBRC, KC_RPRN, KC_RCBR, KC_TRNS, KC_TRNS, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_DQUO, KC_LALT, KC_TRNS, KC_TRNS, KC_TRNS, KC_UNDS, KC_GRV, KC_TRNS, KC_TRNS, KC_BSLS, KC_MINS, KC_LT, KC_GT, KC_QUES, KC_RALT, KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_TRNS, RESET),
 	[3] = LAYOUT(KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PSCR, KC_TRNS, KC_TRNS, KC_MPRV, KC_MNXT, KC_VOLU, KC_TRNS, KC_TRNS, RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, RGB_RMOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
 	[4] = LAYOUT(KC_ENT, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSLS, KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_MINS, KC_LSFT, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_LCTL, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_TRNS, KC_DEL, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT, KC_RALT, KC_SPC, MO(1), MO(2), KC_SPC, KC_ENT),
-	[5] = LAYOUT(KC_TRNS, KC_TRNS, KC_ACL0, KC_ACL1, KC_ACL2, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_BTN1, KC_MS_U, KC_BTN3, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_MS_L, KC_MS_D, KC_MS_R, KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_TRNS, KC_BTN2, KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO)
+	[5] = LAYOUT(KC_TRNS, KC_TRNS, KC_ACL0, KC_ACL1, KC_ACL2, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_BTN1, KC_MS_U, KC_BTN3, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_MS_L, KC_MS_D, KC_MS_R, KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_TRNS, KC_TRNS, KC_BTN2, KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO),
+    [_EMOJI] = LAYOUT(
+        X(HART2), X(CRY2),X(WEARY),X(EYERT),X(SMIRK), X(TJOY),X(RECYC),X(UNAMU),X(MUSIC),X(OKHND),X(PENSV), X(PHEW),
+        X(THMUP), X(PRAY),X(SMILE),X(SMIL2),X(FLUSH), X(GRIN),X(HEART),  X(BYE), X(KISS),X(CELEB), X(COOL),X(NOEVS),
+        X(THMDN),X(SLEEP), X(CLAP),  X(CRY),  X(VIC),X(BHART),  X(SUN),X(SMEYE), X(WINK), X(MOON),X(CONFU),X(NOEVH),
+        X(POO), X(EYES), X(HUNRD),_______, X(SKULL),X(HORNS), X(HALO), X(FEAR),_______,X(YUMMY),X(DISAP),X(NOEVK),
+        _______, _______, _______, _______, _______, _______, _______, _______
+    ),
 };
 
 // bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -205,6 +375,7 @@ void keyboard_post_init_user(void) {
   debug_keyboard=true;
   //debug_mouse=true;
   rgblight_sethsv_noeeprom(HSV_PURPLE);
+  set_unicode_input_mode(UC_WINC);
 }
 
 void matrix_scan_user(void) {
@@ -217,8 +388,11 @@ void matrix_scan_user(void) {
 }
 
 // TODO
-// mouse keys?
+// emoji layer for linux
 // lower and raise on far thumb keys?
 // tap dance ;; to :?
 // Dynamic macro buttons would be interesting for repetitive actions
 // modifier (super?) on tab
+// https://github.com/qmk/qmk_firmware/blob/master/keyboards/handwired/promethium/keymaps/priyadi/keymap.c
+//// the X codes are particularly interesting
+

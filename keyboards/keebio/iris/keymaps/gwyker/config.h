@@ -27,6 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_SAT_STEP 8
 #define RGBLIGHT_VAL_STEP 8
 
+#undef DEBOUNCE
+#define DEBOUNCE 10
+
 #undef ENCODERS_PAD_A
 #undef ENCODERS_PAD_B
 #define ENCODERS_PAD_A { B2 }
