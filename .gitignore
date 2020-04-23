@@ -73,3 +73,9 @@ id_rsa_*
 
 # python things
 __pycache__
+keyboards/keebio/iris/.vscode/c_cpp_properties.json
+keyboards/keebio/iris/.vscode/settings.json
+keyboards/keebio/iris/keymaps/gwyker/qmk.code-workspace
+keyboards/keebio/iris/keymaps/gwyker/configurator/keymap.c
+keyboards/keebio/iris/keymaps/gwyker/configurator/layers.json
+.gitignore
