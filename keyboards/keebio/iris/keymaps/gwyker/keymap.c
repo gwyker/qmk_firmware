@@ -439,34 +439,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
-// layer_state_t layer_state_set_user(layer_state_t state) {
-//     state = update_tri_layer_state(state, _LOWER, _RAISE, _POWER);
-//     switch (get_highest_layer(state)) {
-//         case _LOWER:
-//             rgblight_sethsv_at(HSV_GREEN);
-//             break;
-//         case _RAISE:
-//             rgblight_sethsv_noeeprom(HSV_AZURE);
-//             break;
-//         case _POWER:
-//             rgblight_sethsv_noeeprom(HSV_RED);
-//             break;
-//         case _GAME:
-//             rgblight_sethsv_noeeprom(HSV_CYAN);
-//             break;
-//         case _MOUSE:
-//             rgblight_sethsv_noeeprom(HSV_YELLOW);
-//             break;
-//         case _EMOJI:
-//             rgblight_sethsv_noeeprom(HSV_ORANGE);
-//             break;
-//         default: //  for any other layers, or the default layer
-//             rgblight_sethsv_noeeprom(HSV_PURPLE);
-//             break;
-//     }
-//     return state;
-// }
-
 void encoder_update_user(uint8_t index, bool counterclockwise) {
     switch(biton32(layer_state)) {
         case _RAISE:
