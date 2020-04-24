@@ -409,24 +409,31 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case _LOWER:
             rgblight_sethsv_noeeprom(HSV_GREEN);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _RAISE:
             rgblight_sethsv_noeeprom(HSV_AZURE);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _POWER:
             rgblight_sethsv_noeeprom(HSV_RED);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _GAME:
             rgblight_sethsv_noeeprom(HSV_CYAN);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _MOUSE:
             rgblight_sethsv_noeeprom(HSV_YELLOW);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _EMOJI:
             rgblight_sethsv_noeeprom(HSV_ORANGE);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         default: //  for any other layers, or the default layer
             rgblight_sethsv_noeeprom(HSV_PURPLE);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
     }
     return state;
