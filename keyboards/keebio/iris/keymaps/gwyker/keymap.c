@@ -19,6 +19,7 @@
 // leds off except for layer toggles (GAME, MOUSE)
 // Arrow key layer toggle on lower left key?
 // GAME layer needs arrow keys
+// Modify arrow layer LED code to light up only the right side
 
 //-----------------------------------------------------------------------
 ////////////////////////  VARIABLES  ////////////////////////////
@@ -45,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
       CTL_ESC ,   A    ,   S    ,   D    ,   F    ,   G    ,                              H    ,   J    ,   K    ,   L    ,  SCLN  ,  QUOT  ,
 //   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-      _7_BSPC ,   Z    ,   X    ,   C    ,   V    ,   B    ,  GAME  ,           GAME  ,   N    ,   M    ,  COMM  ,  DOT   ,  SLSH  ,  UNDS  ,
+       _8_EQL ,   Z    ,   X    ,   C    ,   V    ,   B    ,  GAME  ,           GAME  ,   N    ,   M    ,  COMM  ,  DOT   ,  SLSH  ,  UNDS  ,
 //   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                      GUI_BSPC, _2_SPC ,  LSPO  ,                    RSPC  , _1_SPC ,rCTL_ENT
 //                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -54,11 +55,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
         F12   ,   F1   ,   F2   ,   F3   ,   F4   ,   F5   ,                              F6   ,   F7   ,   F8   ,   F9   ,  F10   ,  F11   ,
 //   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-       G_TAB  ,  ____  ,  APP   ,   UP   ,  PGUP  ,  INS   ,                            MOUSE  ,  APP   ,  HOME  ,  PGUP  ,  ____  ,  INS   ,
+       G_TAB  ,  ____  ,  LCBR  ,  LBRC  ,  EQL   ,  ____  ,                            MOUSE  ,  APP   ,  HOME  ,  PGUP  ,  ____  ,  INS   ,
 //   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-        ____  ,  HOME  ,  LEFT  ,  DOWN  ,  RGHT  ,  END   ,                             LEFT  ,  DOWN  ,   UP   ,  RGHT  ,  ____  ,  PAUS  ,
+        ____  ,  EXLM  ,   AT   ,  HASH  ,  DLR   ,  PERC  ,                             LEFT  ,  DOWN  ,   UP   ,  RGHT  ,  ____  ,  PAUS  ,
 //   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-        ____  ,  ____  ,  ____  ,  ____  ,  PGDN  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  END   ,  PGDN  ,  ____  , RESET  ,
+        ____  ,  ____  ,  ____  ,  GRV   ,  TILD  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  END   ,  PGDN  ,  ____  , RESET  ,
 //   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                        ____  ,  ____  ,  ____  ,                    ____  ,  ____  , _6_ENT
 //                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
@@ -69,7 +70,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
        G_TAB  ,  ____  ,  LCBR  ,  LBRC  ,  EQL   ,  ____  ,                             EXLM  ,  PLUS  ,  RBRC  ,  RCBR  ,  PIPE  ,  UNDS  ,
 //   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-        DEL   ,  EXLM  ,   AT   ,  HASH  ,  DLR   ,  PERC  ,                             CIRC  ,  AMPR  ,  ASTR  ,  EQL   ,  COLN  ,  DQUO  ,
+        ____  ,  EXLM  ,   AT   ,  HASH  ,  DLR   ,  PERC  ,                             CIRC  ,  AMPR  ,  ASTR  ,  EQL   ,  COLN  ,  DQUO  ,
 //   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
         MUTE  ,  ____  ,  ____  ,  GRV   ,  TILD  ,  ____  ,  ____  ,           ____  ,  TILD  ,  BSLS  ,   LT   ,   GT   ,  QUES  ,  ____  ,
 //   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
@@ -140,6 +141,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
                                        ____  ,   P0   ,  ____  ,                    ____  ,   P0   ,  ____
 //                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [8] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  HOME  ,  PGUP  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             LEFT  ,  DOWN  ,   UP   ,  RGHT  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  END   ,  PGDN  ,  ____  ,  ____  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  ____  ,  ____  ,                    ____  ,  ____  ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
     )
 };
 
@@ -186,31 +200,35 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case _LOWER:
             rgblight_sethsv_noeeprom(HSV_GREEN);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _RAISE:
             rgblight_sethsv_noeeprom(HSV_AZURE);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _POWER:
             rgblight_sethsv_noeeprom(HSV_RED);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _GAME:
             rgblight_sethsv_noeeprom(HSV_CYAN);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _MOUSE:
             rgblight_sethsv_noeeprom(HSV_YELLOW);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         case _EMOJI:
             rgblight_sethsv_noeeprom(HSV_ORANGE);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        case _ARROW:
+            rgblight_sethsv_noeeprom(HSV_YELLOW);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
         default: //  for any other layers, or the default layer
             rgblight_sethsv_noeeprom(HSV_PURPLE);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            rgblight_sethsv_noeeprom(rgblight_get_hue(), rgblight_get_sat(), 100);
             break;
     }
     return state;

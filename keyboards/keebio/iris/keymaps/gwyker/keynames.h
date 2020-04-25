@@ -22,7 +22,8 @@
 #define KC__1_SPC   LT(1,KC_SPC)
 #define KC__2_SPC   LT(2,KC_SPC)
 #define KC__6_ENT   LT(6,KC_ENT)
-#define KC__7_BSPC   LT(7,KC_BSPC)
+#define KC__7_BSPC  LT(7,KC_BSPC)
+#define KC__8_EQL   LT(8,KC_EQL)
 
 // Layer toggles
 #define KC_GAME     TG(4)
@@ -49,15 +50,10 @@
 #define _GAME 4
 #define _MOUSE 5
 #define _EMOJI 6
+#define _ARROW 8
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
-//   LOWER,
-//   RAISE,
-//   POWER,
-//   GAME,
-//   MOUSE,
   MAGICTAB,
-//   EMOJI,
 };
 

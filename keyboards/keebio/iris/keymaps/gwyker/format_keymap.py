@@ -40,9 +40,11 @@ DEFINES = {
     'LT(2,KC_SPC)': '_2_SPC',
     'LT(1,KC_SPC)': '_1_SPC',
     'LT(6,KC_ENT)': '_6_ENT',
+    'LT(8,KC_EQL)': '_8_EQL',
 
     'TG(4)': 'GAME',
     'TG(5)': 'MOUSE',
+    'TG(8)': 'ARROW',
 }
 ROW_LENGTHS = [12, 12, 12, 14, 6]
 
