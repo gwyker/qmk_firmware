@@ -84,12 +84,14 @@ def format(keymap):
     output = output[:last_comma] + output[last_comma+1:]
     return output
 
+
 def main(filepath):
     with open(filepath, 'r') as f:
         keymap = json.load(f)
     output = format(keymap)
     pyperclip.copy(output)
     return output
+
 
 if __name__ == '__main__':
     main(sys.argv[1])
