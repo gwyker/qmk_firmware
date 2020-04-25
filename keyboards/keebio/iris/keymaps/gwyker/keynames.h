@@ -23,7 +23,7 @@
 #define KC__2_SPC   LT(2,KC_SPC)
 #define KC__6_ENT   LT(6,KC_ENT)
 #define KC__7_BSPC  LT(7,KC_BSPC)
-#define KC__8_EQL   LT(8,KC_EQL)
+#define KC__8_ENT   LT(8,KC_ENT)
 
 // Layer toggles
 #define KC_GAME     TG(4)
