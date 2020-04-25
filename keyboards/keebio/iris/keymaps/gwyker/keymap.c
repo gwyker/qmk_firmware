@@ -1,85 +1,278 @@
 #include QMK_KEYBOARD_H
 #include "emoji.h"
+#include "keynames.h"
+//#include "tapdance.h"
 
-
-#define _QWERTY 0
-#define _LOWER 1
-#define _RAISE 2
-#define _POWER 3
-#define _GAME 4
-#define _MOUSE 5
-#define _EMOJI 6
+//-----------------------------------------------------------------------
+////////////////////////  VARIABLES  ////////////////////////////
+//-----------------------------------------------------------------------
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
-enum custom_keycodes {
-  QWERTY = SAFE_RANGE,
-//   LOWER,
-//   RAISE,
-//   POWER,
-//   GAME,
-//   MOUSE,
-  ALT_TAB,
-//   EMOJI,
+//-----------------------------------------------------------------------
+////////////////////////  KEYCODE PROCESS  ////////////////////////////
+//-----------------------------------------------------------------------
+// KC_F13 -> ALT_TAB
+// KC_F14 -> LT(_EMOJI, OSM(_EMOJI))
+// [disabled] KC_LSPO -> TD(X_LSFT)
+// [disabled] KC_RSPO -> TD(X_RSFT)
+// [disabled] KC_SCLN -> TD(TD_SCLN)
+// add emoji layer 6
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [0] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+      MAGICTAB,   1    ,   2    ,   3    ,   4    ,   5    ,                              6    ,   7    ,   8    ,   9    ,   0    ,  DEL   ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+      ALT_TAB ,   Q    ,   W    ,   E    ,   R    ,   T    ,                              Y    ,   U    ,   I    ,   O    ,   P    ,  MINS  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+      CTL_ESC ,   A    ,   S    ,   D    ,   F    ,   G    ,                              H    ,   J    ,   K    ,   L    ,  SCLN  ,  QUOT  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+      _7_BSPC ,   Z    ,   X    ,   C    ,   V    ,   B    ,  GAME  ,           GAME  ,   N    ,   M    ,  COMM  ,  DOT   ,  SLSH  ,  UNDS  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                     GUI_BSPC, _2_SPC ,  LSPO  ,                    RSPC  , _1_SPC ,rCTL_ENT
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [1] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        F12   ,   F1   ,   F2   ,   F3   ,   F4   ,   F5   ,                              F6   ,   F7   ,   F8   ,   F9   ,  F10   ,  F11   ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+       G_TAB  ,  ____  ,  APP   ,   UP   ,  PGUP  ,  INS   ,                            MOUSE  ,  APP   ,  HOME  ,  PGUP  ,  ____  ,  INS   ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  HOME  ,  LEFT  ,  DOWN  ,  RGHT  ,  END   ,                             LEFT  ,  DOWN  ,   UP   ,  RGHT  ,  ____  ,  PAUS  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  PGDN  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  END   ,  PGDN  ,  ____  , RESET  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  ____  ,  ____  ,                    ____  ,  ____  , _6_ENT
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [2] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+       G_GRV  ,  G_1   ,  G_2   ,  G_3   ,  G_4   ,  G_5   ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  PSCR  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+       G_TAB  ,  ____  ,  LCBR  ,  LBRC  ,  EQL   ,  ____  ,                             EXLM  ,  PLUS  ,  RBRC  ,  RCBR  ,  PIPE  ,  UNDS  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        DEL   ,  EXLM  ,   AT   ,  HASH  ,  DLR   ,  PERC  ,                             CIRC  ,  AMPR  ,  ASTR  ,  EQL   ,  COLN  ,  DQUO  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        MUTE  ,  ____  ,  ____  ,  GRV   ,  TILD  ,  ____  ,  ____  ,           ____  ,  TILD  ,  BSLS  ,   LT   ,   GT   ,  QUES  ,  ____  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  ____  ,  ____  ,                    ____  ,  ____  ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [3] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  RGUI  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  PSCR  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  MPRV  ,  MNXT  ,  VOLU  ,  ____  ,  ____  ,                           RGB_TOG ,RGB_MOD ,RGB_HUI ,RGB_SAI ,RGB_VAI ,RGB_SPI ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        MUTE  ,  MSTP  ,  MPLY  ,  VOLD  ,  ____  ,  ____  ,  ____  ,           ____  ,  ____  ,RGB_RMOD,RGB_HUD ,RGB_SAD ,RGB_VAD ,RGB_SPD ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  ____  ,  ____  ,                    ____  ,  ____  ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [4] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        TAB   ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        LCTL  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        LSFT  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  SPC   ,  LSFT  ,                    ESC   ,  ____  ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [5] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        ____  ,  ____  ,  ACL0  ,  ACL1  ,  ACL2  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  BTN1  ,  MS_U  ,  BTN2  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  MS_L  ,  MS_D  ,  MS_R  ,  ____  ,                            MOUSE  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  BTN3  ,  ____  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  ACL0  ,  ____  ,                    ____  ,  ____  ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [6] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,                             ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,           ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,  ____  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,  ____  ,  ____  ,                    ____  ,  ____  ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    ),
+    [7] = LAYOUT_kc(
+//   ┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
+        ____  ,  ____  ,  PSLS  ,  PAST  ,  PMNS  ,  ____  ,                             ____  ,  PSLS  ,  PAST  ,  PMNS  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,   P7   ,   P8   ,   P9   ,  PPLS  ,  ____  ,                              P7   ,   P8   ,   P9   ,  PPLS  ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
+         P0   ,   P4   ,   P5   ,   P6   ,   P0   ,  ____  ,                              P4   ,   P5   ,   P6   ,   P0   ,  ____  ,  ____  ,
+//   ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+        ____  ,   P1   ,   P2   ,   P3   ,  PEQL  ,  ____  ,  ____  ,           ____  ,   P1   ,   P2   ,   P3   ,  PEQL  ,  ____  ,  ____  ,
+//   └────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+                                       ____  ,   P0   ,  ____  ,                    ____  ,   P0   ,  ____
+//                                  └────────┴────────┴────────┘                 └────────┴────────┴────────┘
+    )
 };
 
-#define KC_SALT      ALT_TAB
-#define KC_CTL_ESC   LCTL_T(KC_ESC)
-#define KC_CTL_ENT   LCTL_T(KC_ENT)
-#define KC_GUI_ENT   LGUI_T(KC_ENT)
-#define KC_CTL_SPC   LCTL_T(KC_SPC)
-#define KC_CTL_SPC   LCTL_T(KC_SPC)
-#define KC_GAME      TG(_GAME)
-#define KC_LOWER     MO(_LOWER)
-#define KC_RAISE_SPC LT(_RAISE, KC_SPC)
-#define KC_F13       ALT_TAB
-#define KC_F14       LT(_EMOJI, OSM(_EMOJI))
+//-----------------------------------------------------------------------
+////////////////////////  QMK FUNCTIONS  ////////////////////////////
+//-----------------------------------------------------------------------
+// This is called during key processing before the actual key event is handled.
+// If the function returns true QMK will process the keycode as usual.
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case MAGICTAB:
+      if (record->event.pressed) {
+        if (get_mods() & MOD_MASK_GUI) {
+          tap_code(KC_GRV);
+        }
+        else if (get_mods() & MOD_MASK_SHIFT) {
+          unregister_mods(MOD_LSFT);
+          tap_code(KC_ESC);
+          register_mods(MOD_LSFT);
+        }
+        else if (get_mods() & MOD_MASK_CTRL) {
+          layer_invert(_GAME);
+        }
+        else {
+          if (!is_alt_tab_active) {
+            is_alt_tab_active = true;
+            register_code(KC_LALT);
+          }
+          alt_tab_timer = timer_read();
+          register_code(KC_TAB);
+        }
+      } else {
+        unregister_code(KC_TAB);
+      }
+      break;
+  }
+  return true;
+}
 
-// Tap Dance
-typedef struct {
-  bool is_press_action;
-  int state;
-} tap;
+// Called whenever the layer state changes.
+// Used to change the LED color.
+layer_state_t layer_state_set_user(layer_state_t state) {
+    state = update_tri_layer_state(state, _LOWER, _RAISE, _POWER);
+    switch (get_highest_layer(state)) {
+        case _LOWER:
+            rgblight_sethsv_noeeprom(HSV_GREEN);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        case _RAISE:
+            rgblight_sethsv_noeeprom(HSV_AZURE);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        case _POWER:
+            rgblight_sethsv_noeeprom(HSV_RED);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        case _GAME:
+            rgblight_sethsv_noeeprom(HSV_CYAN);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        case _MOUSE:
+            rgblight_sethsv_noeeprom(HSV_YELLOW);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        case _EMOJI:
+            rgblight_sethsv_noeeprom(HSV_ORANGE);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+        default: //  for any other layers, or the default layer
+            rgblight_sethsv_noeeprom(HSV_PURPLE);
+            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
+            break;
+    }
+    return state;
+}
 
-enum {
-  SINGLE_TAP = 1,
-  SINGLE_HOLD = 2,
-  DOUBLE_TAP = 3,
-  DOUBLE_HOLD = 4,
-  DOUBLE_SINGLE_TAP = 5, //send two single taps
-  TRIPLE_TAP = 6,
-  TRIPLE_HOLD = 7
-};
+// Encoder function.
+void encoder_update_user(uint8_t index, bool counterclockwise) {
+    switch(biton32(layer_state)) {
+        case _RAISE:
+            if (counterclockwise) {
+                tap_code(KC_VOLD);
+            } else {
+                tap_code(KC_VOLU);
+            }
+            break;
+        case _GAME:
+            if (counterclockwise) {
+                tap_code(KC_VOLD);
+            } else {
+                tap_code(KC_VOLU);
+            }
+            break;
+        case _LOWER:
+            if (counterclockwise) {
+                register_code(KC_LSFT);
+                register_code(KC_LCTL);
+                tap_code(KC_TAB);
+                unregister_code(KC_LSFT);
+                unregister_code(KC_LCTL);
+            } else {
+                register_code(KC_LCTL);
+                tap_code(KC_TAB);
+                unregister_code(KC_LCTL);
+            }
+            break;
+        default:
+            if (counterclockwise) {
+                tap_code(KC_WH_U);
+            } else {
+                tap_code(KC_WH_D);
+            }
+            break;
+    }
+}
 
-enum {
-  TD_SCLN = 0,
-  X_LSFT,
-  X_RSFT
-};
+// Called once after the keyboard boots up
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  debug_enable=true;
+  debug_matrix=true;
+  debug_keyboard=true;
+  //debug_mouse=true;
+  rgblight_sethsv_noeeprom(HSV_PURPLE);
+  set_unicode_input_mode(UC_WINC);
+}
 
-int cur_dance (qk_tap_dance_state_t *state);
+// Called ten times a second. Can lower performance!
+void matrix_scan_user(void) {
+  if (is_alt_tab_active) {
+    if (timer_elapsed(alt_tab_timer) > 1000) {
+      unregister_code(KC_LALT);
+      is_alt_tab_active = false;
+    }
+  }
+}
 
-//for the x tap dance. Put it here so it can be used in any keymap
-void x_LSFT_finished (qk_tap_dance_state_t *state, void *user_data);
-void x_LSFT_reset (qk_tap_dance_state_t *state, void *user_data);
-void x_RSFT_finished (qk_tap_dance_state_t *state, void *user_data);
-void x_RSFT_reset (qk_tap_dance_state_t *state, void *user_data);
+//-----------------------------------------------------------------------
+//////////////////////////////  TODO  /////////////////////////////////
+//-----------------------------------------------------------------------
+// emoji layer for linux
+// tap dance ;; to :
+// Dynamic macro buttons would be interesting for repetitive actions
+// https://github.com/qmk/qmk_firmware/blob/master/keyboards/handwired/promethium/keymaps/priyadi/keymap.c
+//// X codes
 
-//Tap Dance Definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-  // key   :   SEMICOLON
-  // one tap: ;
-  // two taps: :
-  [TD_SCLN] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
 
-  // key   :   SHIFT
-  // one tap: (
-  // two taps: [
-  // hold: Shift
-  [X_LSFT]     = ACTION_TAP_DANCE_FN_ADVANCED(NULL,x_LSFT_finished, x_LSFT_reset),
-  [X_RSFT]     = ACTION_TAP_DANCE_FN_ADVANCED(NULL,x_RSFT_finished, x_RSFT_reset)
-};
-
+//-----------------------------------------------------------------------
+//////////////////////////////  VISUAL KEYMAPS /////////////////////////////////
+//-----------------------------------------------------------------------
 // const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // 	[_QWERTY] = LAYOUT_kc(
@@ -173,340 +366,3 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 // ),
 
 
-// KC_F13 -> ALT_TAB
-// KC_F14 -> LT(_EMOJI, OSM(_EMOJI))
-// [disabled] KC_LSPO -> TD(X_LSFT)
-// [disabled] KC_RSPO -> TD(X_RSFT)
-// [disabled] KC_SCLN -> TD(TD_SCLN)
-// add emoji layer 6
-// replace KC_TRNS with ____
-//// s/KC_TRNS/_______/g
-
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT(
-            KC_F13,         KC_1,   KC_2,   KC_3,   KC_4,    KC_5,                                 KC_6,         KC_7,            KC_8,    KC_9,   KC_0,    KC_DEL,
-            LALT_T(KC_TAB), KC_Q,   KC_W,   KC_E,   KC_R,    KC_T,                                 KC_Y,         KC_U,            KC_I,    KC_O,   KC_P,    KC_MINS,
-            LCTL_T(KC_ESC), KC_A,   KC_S,   KC_D,   KC_F,    KC_G,                                 KC_H,         KC_J,            KC_K,    KC_L,   KC_SCLN, KC_QUOT,
-            LT(7,KC_BSPC),  KC_Z,   KC_X,   KC_C,   KC_V,    KC_B,       TG(4),           TG(4), KC_N,         KC_M,            KC_COMM, KC_DOT, KC_SLSH, KC_UNDS,
-                                    LGUI_T(KC_BSPC), LT(2,KC_SPC), KC_LSPO,         KC_RSPC,         LT(1,KC_SPC), RCTL_T(KC_ENT)),
-    [1] = LAYOUT(
-            KC_F12,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                           KC_F6,   KC_F7,    KC_F8,   KC_F9,   KC_F10,  KC_F11,
-            LGUI(KC_TAB), _______,    KC_APP,     KC_UP,      KC_PGUP,    KC_INS,                             TG(5),   KC_APP,        KC_HOME,   KC_PGUP, MO(_EMOJI), KC_INS,
-            _______,       KC_HOME,    KC_LEFT,    KC_DOWN,    KC_RGHT,    KC_END,                             KC_LEFT, KC_DOWN,       KC_UP, KC_RGHT, _______,  KC_PAUS,
-            _______,      _______,    _______,    _______,    KC_PGDN,    _______,    _______,         _______, _______, _______,       KC_END, KC_PGDN, _______, RESET,
-                                    _______,    _______,    _______,         _______, _______, LT(6,KC_ENT)),
-    [2] = LAYOUT(
-            LGUI(KC_GRV), LGUI(KC_1), LGUI(KC_2), LGUI(KC_3), LGUI(KC_4), LGUI(KC_5),           _______, _______, _______, _______, _______, KC_PSCR,
-            LGUI(KC_TAB), _______,   KC_LCBR, KC_LBRC, KC_EQL, _______,                         KC_EXLM, KC_PLUS,  KC_RBRC, KC_RCBR, KC_PIPE, KC_UNDS,
-            KC_DEL,  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                         KC_CIRC, KC_AMPR,  KC_ASTR, KC_EQL, KC_COLN,  KC_DQUO,
-            KC_MUTE, _______, _______, KC_GRV, KC_TILD,  _______, _______,         _______, KC_TILD, KC_BSLS,  KC_LT, KC_GT, KC_QUES, _______,
-                                    _______, _______, _______,         _______, _______, _______),
-    [3] = LAYOUT(
-            _______, _______, _______, _______, _______, _______,                         _______, _______,  _______, _______, _______, KC_RGUI,
-            _______, _______, _______, _______, _______, _______,                         _______, _______,  _______, _______, KC_PSCR, _______,
-            _______, KC_MPRV, KC_MNXT, KC_VOLU, _______, _______,                         RGB_TOG, RGB_MOD,  RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI,
-            KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, _______, _______, _______,         _______, _______, RGB_RMOD, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD,
-                                    _______, _______, _______,         _______, _______, _______),
-    [4] = LAYOUT(
-            _______, _______, _______, _______, _______, _______,                         _______, _______, _______, _______, _______, _______,
-            KC_TAB,  _______, _______, _______, _______, _______,                         _______, _______, _______, _______, _______,    _______,
-            KC_LCTL, _______, _______, _______, _______, _______,                         _______, _______, _______, _______, _______, _______,
-            KC_LSFT, _______, _______, _______, _______, _______, _______,              _______, _______, _______, _______, _______, _______, _______,
-                                    _______,  KC_SPC, KC_LSFT,         KC_ESC,  _______, _______),
-    [5] = LAYOUT(
-            _______, _______, KC_ACL0, KC_ACL1, KC_ACL2, _______,                         _______, _______,  _______, _______, _______, _______,
-            _______, _______, KC_BTN1, KC_MS_U, KC_BTN2, _______,                         _______, _______,  _______, _______, _______, _______,
-            _______, _______, KC_MS_L, KC_MS_D, KC_MS_R, _______,                         TG(5),   _______,  _______, _______, _______, _______,
-            _______, _______, _______, KC_BTN3, _______, _______, _______,         _______, _______, _______,  _______, _______, _______, _______,
-                                    _______, KC_ACL0, _______,         _______, _______, _______),
-    [6] = LAYOUT(
-        X(HART2), X(CRY2), X(WEARY), X(EYERT), X(SMIRK), X(TJOY),             X(RECYC), X(UNAMU), X(MUSIC), X(OKHND), X(PENSV), X(PHEW),
-        X(THMUP), X(PRAY), X(SMILE), X(SMIL2), X(FLUSH), X(GRIN),             X(HEART), X(BYE), X(KISS), X(CELEB), X(COOL), X(NOEVS),
-        X(THMDN), X(SLEEP), X(CLAP), X(CRY), X(VIC), X(BHART),             X(SUN), X(SMEYE), X(WINK), X(MOON), X(CONFU), X(NOEVH),
-        X(POO), X(EYES), X(HUNRD), _______, X(SKULL), X(HORNS), X(HALO),         X(FEAR), _______, X(YUMMY), X(DISAP), X(NOEVK), _______, _______,
-                                _______, _______, _______,     _______, _______, _______
-    ),
-    [7] = LAYOUT(
-            _______, _______, KC_PSLS, KC_PAST, KC_PMNS, _______,                         _______, _______, _______, _______, _______, _______,
-            _______, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, _______,                         _______,   _______,   KC_HOME,   KC_PGUP, _______, _______,
-            KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_P0,   _______,                         KC_LEFT,   KC_DOWN,   KC_UP,   KC_RGHT, _______,   _______,
-            _______, KC_P1,   KC_P2,   KC_P3,   KC_PEQL, _______, _______,         _______, _______,   _______,   KC_END,   KC_PGDN, _______, _______,
-                                    _______, KC_P0,   _______,         _______, _______, _______)
-};
-
-// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-//   switch (keycode) {
-//     case QWERTY:
-//       if (record->event.pressed) {
-//         set_single_persistent_default_layer(_QWERTY);
-//       }
-//       return false;
-//       break;
-//     case LOWER:
-//       if (record->event.pressed) {
-//         layer_on(_LOWER);
-//         update_tri_layer(_LOWER, _RAISE, _POWER);
-//       } else {
-//         layer_off(_LOWER);
-//         update_tri_layer(_LOWER, _RAISE, _POWER);
-//       }
-//       return false;
-//       break;
-//     case RAISE:
-//       if (record->event.pressed) {
-//         layer_on(_RAISE);
-//         update_tri_layer(_LOWER, _RAISE, _POWER);
-//       } else {
-//         layer_off(_RAISE);
-//         update_tri_layer(_LOWER, _RAISE, _POWER);
-//       }
-//       return false;
-//       break;
-//     case POWER:
-//       if (record->event.pressed) {
-//         layer_on(_POWER);
-//       } else {
-//         layer_off(_POWER);
-//       }
-//       return false;
-//       break;
-//   }
-//   return true;
-// }
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case ALT_TAB:
-      if (record->event.pressed) {
-        if (get_mods() & MOD_MASK_GUI) {
-          tap_code(KC_GRV);
-        }
-        else if (get_mods() & MOD_MASK_SHIFT) {
-          unregister_mods(MOD_LSFT);
-          tap_code(KC_ESC);
-          register_mods(MOD_LSFT);
-        }
-        else if (get_mods() & MOD_MASK_CTRL) {
-          layer_invert(_GAME);
-        }
-        else {
-          if (!is_alt_tab_active) {
-            is_alt_tab_active = true;
-            register_code(KC_LALT);
-          }
-          alt_tab_timer = timer_read();
-          register_code(KC_TAB);
-        }
-      } else {
-        unregister_code(KC_TAB);
-      }
-      break;
-  }
-  return true;
-}
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    state = update_tri_layer_state(state, _LOWER, _RAISE, _POWER);
-    switch (get_highest_layer(state)) {
-        case _LOWER:
-            rgblight_sethsv_noeeprom(HSV_GREEN);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-        case _RAISE:
-            rgblight_sethsv_noeeprom(HSV_AZURE);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-        case _POWER:
-            rgblight_sethsv_noeeprom(HSV_RED);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-        case _GAME:
-            rgblight_sethsv_noeeprom(HSV_CYAN);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-        case _MOUSE:
-            rgblight_sethsv_noeeprom(HSV_YELLOW);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-        case _EMOJI:
-            rgblight_sethsv_noeeprom(HSV_ORANGE);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-        default: //  for any other layers, or the default layer
-            rgblight_sethsv_noeeprom(HSV_PURPLE);
-            rgblight_sethsv(rgblight_get_hue(), rgblight_get_sat(), 100);
-            break;
-    }
-    return state;
-}
-
-void encoder_update_user(uint8_t index, bool counterclockwise) {
-    switch(biton32(layer_state)) {
-        case _RAISE:
-            if (counterclockwise) {
-                tap_code(KC_VOLD);
-            } else {
-                tap_code(KC_VOLU);
-            }
-            break;
-        case _GAME:
-            if (counterclockwise) {
-                tap_code(KC_VOLD);
-            } else {
-                tap_code(KC_VOLU);
-            }
-            break;
-        case _LOWER:
-            if (counterclockwise) {
-                register_code(KC_LSFT);
-                register_code(KC_LCTL);
-                tap_code(KC_TAB);
-                unregister_code(KC_LSFT);
-                unregister_code(KC_LCTL);
-            } else {
-                register_code(KC_LCTL);
-                tap_code(KC_TAB);
-                unregister_code(KC_LCTL);
-            }
-            break;
-        default:
-            if (counterclockwise) {
-                tap_code(KC_WH_U);
-            } else {
-                tap_code(KC_WH_D);
-            }
-            break;
-    }
-}
-
-void keyboard_post_init_user(void) {
-  // Customise these values to desired behaviour
-  debug_enable=true;
-  debug_matrix=true;
-  debug_keyboard=true;
-  //debug_mouse=true;
-  rgblight_sethsv_noeeprom(HSV_PURPLE);
-  set_unicode_input_mode(UC_WINC);
-}
-
-void matrix_scan_user(void) {
-  if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 1000) {
-      unregister_code(KC_LALT);
-      is_alt_tab_active = false;
-    }
-  }
-}
-
-/* Return an integer that corresponds to what kind of tap dance should be executed.
- *
- * How to figure out tap dance state: interrupted and pressed.
- *
- * Interrupted: If the state of a dance dance is "interrupted", that means that another key has been hit
- *  under the tapping term. This is typically indicitive that you are trying to "tap" the key.
- *
- * Pressed: Whether or not the key is still being pressed. If this value is true, that means the tapping term
- *  has ended, but the key is still being pressed down. This generally means the key is being "held".
- *
- * One thing that is currenlty not possible with qmk software in regards to tap dance is to mimic the "permissive hold"
- *  feature. In general, advanced tap dances do not work well if they are used with commonly typed letters.
- *  For example "A". Tap dances are best used on non-letter keys that are not hit while typing letters.
- *
- * Good places to put an advanced tap dance:
- *  z,q,x,j,k,v,b, any function key, home/end, comma, semi-colon
- *
- * Criteria for "good placement" of a tap dance key:
- *  Not a key that is hit frequently in a sentence
- *  Not a key that is used frequently to double tap, for example 'tab' is often double tapped in a terminal, or
- *    in a web form. So 'tab' would be a poor choice for a tap dance.
- *  Letters used in common words as a double. For example 'p' in 'pepper'. If a tap dance function existed on the
- *    letter 'p', the word 'pepper' would be quite frustating to type.
- *
- * For the third point, there does exist the 'DOUBLE_SINGLE_TAP', however this is not fully tested
- *
- */
-int cur_dance (qk_tap_dance_state_t *state) {
-  if (state->count == 1) {
-    if (state->interrupted || !state->pressed)  return SINGLE_TAP;
-    //key has not been interrupted, but they key is still held. Means you want to send a 'HOLD'.
-    else return SINGLE_HOLD;
-  }
-  else if (state->count == 2) {
-    /*
-     * DOUBLE_SINGLE_TAP is to distinguish between typing "pepper", and actually wanting a double tap
-     * action when hitting 'pp'. Suggested use case for this return value is when you want to send two
-     * keystrokes of the key, and not the 'double tap' action/macro.
-    */
-    if (state->interrupted) return DOUBLE_SINGLE_TAP;
-    else if (state->pressed) return DOUBLE_HOLD;
-    else return DOUBLE_TAP;
-  }
-  //Assumes no one is trying to type the same letter three times (at least not quickly).
-  //If your tap dance key is 'KC_W', and you want to type "www." quickly - then you will need to add
-  //an exception here to return a 'TRIPLE_SINGLE_TAP', and define that enum just like 'DOUBLE_SINGLE_TAP'
-  if (state->count == 3) {
-    if (state->interrupted || !state->pressed)  return TRIPLE_TAP;
-    else return TRIPLE_HOLD;
-  }
-  else return 8; //magic number. At some point this method will expand to work for more presses
-}
-
-//instanalize an instance of 'tap' for the 'x' tap dance.
-static tap xtap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void x_LSFT_finished (qk_tap_dance_state_t *state, void *user_data) {
-  xtap_state.state = cur_dance(state);
-  switch (xtap_state.state) {
-    case SINGLE_TAP: register_code(KC_LSFT); register_code(KC_9); break;
-    case SINGLE_HOLD: register_code(KC_LSFT); break;
-    case DOUBLE_TAP: register_code(KC_LBRC); break;
-    case DOUBLE_HOLD: break;
-    //Last case is for fast typing. Assuming your key is `f`:
-    //For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
-    //In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
-  }
-}
-
-void x_LSFT_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (xtap_state.state) {
-    case SINGLE_TAP: unregister_code(KC_9); unregister_code(KC_LSFT); break;
-    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_TAP: unregister_code(KC_LBRC); break;
-    case DOUBLE_HOLD: break;
-  }
-  xtap_state.state = 0;
-}
-
-void x_RSFT_finished (qk_tap_dance_state_t *state, void *user_data) {
-  xtap_state.state = cur_dance(state);
-  switch (xtap_state.state) {
-    case SINGLE_TAP: register_code(KC_RSFT); register_code(KC_9); break;
-    case SINGLE_HOLD: register_code(KC_RSFT); break;
-    case DOUBLE_TAP: register_code(KC_RBRC); break;
-    case DOUBLE_HOLD: break;
-    //Last case is for fast typing. Assuming your key is `f`:
-    //For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
-    //In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
-  }
-}
-
-void x_RSFT_reset (qk_tap_dance_state_t *state, void *user_data) {
-  switch (xtap_state.state) {
-    case SINGLE_TAP: unregister_code(KC_9); unregister_code(KC_RSFT); break;
-    case SINGLE_HOLD: unregister_code(KC_RSFT); break;
-    case DOUBLE_TAP: unregister_code(KC_RBRC); break;
-    case DOUBLE_HOLD: break;
-  }
-  xtap_state.state = 0;
-}
-
-
-// TODO
-// emoji layer for linux
-// tap dance ;; to :
-// Dynamic macro buttons would be interesting for repetitive actions
-// https://github.com/qmk/qmk_firmware/blob/master/keyboards/handwired/promethium/keymaps/priyadi/keymap.c
-//// X codes
